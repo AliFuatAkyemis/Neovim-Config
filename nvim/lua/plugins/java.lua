@@ -25,7 +25,7 @@ return {
                                         '-configuration', vim.fn.glob('~/.local/share/nvim/mason/packages/jdtls/config_linux'),
                                         '-data', vim.fn.getcwd() .. '/.jdtls-workspace'
                                 },
-                                root_dir = jdtls.setup.find_root({'.git', 'gradlew', 'mvnw', 'pom.xml'}),
+                                root_dir = jdtls.setup.find_root({ 'src', '.git', 'gradlew', 'mvnw', 'pom.xml' }),
                                 settings = {
                                         java = {
                                                 configuration = {
