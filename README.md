@@ -1,1 +1,1 @@
-My own neovim configurations
+My own neovim configurations for Java
