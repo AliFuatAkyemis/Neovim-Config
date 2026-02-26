@@ -1,28 +1,26 @@
 return {
-        { "mason-org/mason.nvim", opts = {} },
-        {
-                "mason-org/mason-lspconfig.nvim",
-                opts = {},
-                dependencies = {
-                        { 
-                                "mason-org/mason.nvim", 
-                                opts = {} 
-                        },
-                        "neovim/nvim-lspconfig",
-                },
-                config = function()
-                        require("mason-lspconfig").setup({
-                                ensure_installed = { "lua_ls" }
-                        })
-                end
+    {
+        "williamboman/mason.nvim",
+        cmd = "Mason",
+        opts = {
+            ensure_installed = { "lua_ls" },
         },
-        { 
-                "neovim/nvim-lspconfig",
-                config = function()
-                        local lspconfig = require("lspconfig")
-                        lspconfig.lua_ls.setup({})
+    },
+    {
+        "neovim/nvim-lspconfig",
+        dependencies = { "williamboman/mason-lspconfig.nvim" },
+        config = function()
+        local mlsp = require("mason-lspconfig")
 
-                        vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
-                end
-        }
+        mlsp.setup({
+            ensure_installed = { "lua_ls" },
+        })
+
+        -- Setup servers using the new native API (Neovim 0.11+)
+        vim.lsp.enable("lua_ls")
+
+        -- Keybinds
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
+        end,
+    },
 }
