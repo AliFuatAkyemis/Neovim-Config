@@ -1,4 +1,4 @@
-# AliFuat's Neovim Configuration 🚀
+# My Neovim Configuration 🚀
 
 A modular, high-performance, and aesthetically pleasing Neovim configuration tailored for **Java (Spring Boot)** and Lua development.
 
