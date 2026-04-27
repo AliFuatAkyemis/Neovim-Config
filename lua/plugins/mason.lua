@@ -8,6 +8,7 @@ return {
                 "jdtls",
                 "java-debug-adapter",
                 "java-test",
+                "marksman",
             },
         },
     },
@@ -20,11 +21,12 @@ return {
             local mlsp = require("mason-lspconfig")
 
             mlsp.setup({
-                ensure_installed = { "lua_ls" },
+                ensure_installed = { "lua_ls", "marksman" },
             })
 
             -- Setup servers
             vim.lsp.enable("lua_ls")
+            vim.lsp.enable("marksman")
             -- jdtls is handled separately by nvim-jdtls, so we don't call enable here typically
             -- but we can if we want a basic setup. However, the user has nvim-jdtls.
 
