@@ -14,6 +14,11 @@ vim.keymap.set('n', '<C-k>', vim.diagnostic.open_float, { desc = "Open floating 
 vim.keymap.set('n', '<leader>w', ":w<CR>", { desc = "Save file" })
 vim.keymap.set('i', 'jk', "<ESC>", { desc = "Escape to Normal mode" })
 
+-- Buffers
+vim.keymap.set('n', 'L', ":bnext<CR>", { desc = "Next buffer" })
+vim.keymap.set('n', 'H', ":bprevious<CR>", { desc = "Previous buffer" })
+vim.keymap.set('n', '<leader>x', ":bd<CR>", { desc = "Close buffer" })
+
 -- Fix Ctrl+Backspace to delete word by word
 vim.keymap.set('i', '<C-H>', '<C-W>', { noremap = true, silent = true })
 vim.keymap.set('c', '<C-H>', '<C-W>', { noremap = true, silent = true })
