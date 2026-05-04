@@ -1,0 +1,27 @@
+# Neovim swap, backup and undo files
+*.swp
+*.swo
+*.swn
+*.bak
+*.un~
+undo/
+
+# ShaDa (Shared Data) files
+*.shada
+main.shada
+.netrwhist
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+.directory
+
+# Python virtual environments (if any)
+venv/
+.venv/
+__pycache__/
+
+# Node/NPM (if any tools are local)
+node_modules/

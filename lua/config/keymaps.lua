@@ -13,3 +13,10 @@ vim.keymap.set('n', '<C-k>', vim.diagnostic.open_float, { desc = "Open floating 
 -- General
 vim.keymap.set('n', '<leader>w', ":w<CR>", { desc = "Save file" })
 vim.keymap.set('i', 'jk', "<ESC>", { desc = "Escape to Normal mode" })
+
+-- Fix Ctrl+Backspace to delete word by word
+vim.keymap.set('i', '<C-H>', '<C-W>', { noremap = true, silent = true })
+vim.keymap.set('c', '<C-H>', '<C-W>', { noremap = true, silent = true })
+-- Some terminals send <C-BS> instead of <C-H>
+vim.keymap.set('i', '<C-BS>', '<C-W>', { noremap = true, silent = true })
+vim.keymap.set('c', '<C-BS>', '<C-W>', { noremap = true, silent = true })
