@@ -20,6 +20,17 @@ vim.keymap.set('n', 'H', ":bprevious<CR>", { desc = "Previous buffer" })
 vim.keymap.set('n', '<leader>x', ":bd<CR>", { desc = "Close buffer" })
 vim.keymap.set('n', '<leader>bp', ":BufferLineTogglePin<CR>", { desc = "Toggle pin buffer" })
 
+-- Toggle LSP progress
+vim.keymap.set('n', '<leader>up', function()
+  if vim.g.lsp_progress_show == false then
+    vim.g.lsp_progress_show = true
+    vim.notify("LSP Progress Gösteriliyor", vim.log.levels.INFO)
+  else
+    vim.g.lsp_progress_show = false
+    vim.notify("LSP Progress Gizlendi", vim.log.levels.INFO)
+  end
+end, { desc = "Toggle LSP progress" })
+
 -- Fix Ctrl+Backspace to delete word by word
 vim.keymap.set('i', '<C-H>', '<C-W>', { noremap = true, silent = true })
 vim.keymap.set('c', '<C-H>', '<C-W>', { noremap = true, silent = true })
