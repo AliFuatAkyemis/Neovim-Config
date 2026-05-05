@@ -17,23 +17,29 @@ return {
         "neovim/nvim-lspconfig",
         dependencies = { 
             "williamboman/mason-lspconfig.nvim",
+            "hrsh7th/cmp-nvim-lsp",
         },
         config = function()
             local mlsp = require("mason-lspconfig")
+            local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
             mlsp.setup({
                 ensure_installed = { "lua_ls", "marksman", "pyright" },
             })
 
             -- Setup servers
+            vim.lsp.config("lua_ls", { capabilities = capabilities })
+            vim.lsp.config("marksman", { capabilities = capabilities })
+            vim.lsp.config("pyright", { capabilities = capabilities })
+
             vim.lsp.enable("lua_ls")
             vim.lsp.enable("marksman")
             vim.lsp.enable("pyright")
-            -- jdtls is handled separately by nvim-jdtls, so we don't call enable here typically
-            -- but we can if we want a basic setup. However, the user has nvim-jdtls.
 
-        -- Keybinds
-        vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
+            -- jdtls is handled separately by nvim-jdtls
+
+            -- Keybinds
+            vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
         end,
     },
 }
