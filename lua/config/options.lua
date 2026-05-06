@@ -28,3 +28,6 @@ vim.opt.scrolloff = 8
 vim.opt.title = true
 vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+
+-- LSP Progress Visibility
+vim.g.lsp_progress_show = false
