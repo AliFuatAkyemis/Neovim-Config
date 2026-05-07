@@ -37,3 +37,10 @@ vim.keymap.set('c', '<C-H>', '<C-W>', { noremap = true, silent = true })
 -- Some terminals send <C-BS> instead of <C-H>
 vim.keymap.set('i', '<C-BS>', '<C-W>', { noremap = true, silent = true })
 vim.keymap.set('c', '<C-BS>', '<C-W>', { noremap = true, silent = true })
+
+-- Neovide Fullscreen toggle
+if vim.g.neovide then
+    vim.keymap.set('n', '<F11>', function()
+        vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen
+    end, { desc = "Toggle Fullscreen" })
+end

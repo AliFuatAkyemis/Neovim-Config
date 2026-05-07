@@ -29,5 +29,10 @@ vim.opt.title = true
 vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
+-- GUI Visuals
+if vim.g.neovide or vim.g.nvui or vim.fn.has("gui_running") == 1 then
+    vim.opt.guifont = "JetBrainsMono Nerd Font:h12"
+end
+
 -- LSP Progress Visibility
 vim.g.lsp_progress_show = false
