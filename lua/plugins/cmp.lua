@@ -35,7 +35,17 @@ return {
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-Space>"] = cmp.mapping.complete(),
           ["<C-e>"] = cmp.mapping.abort(),
-          ["<CR>"] = cmp.mapping.confirm({ select = true }),
+          ["<CR>"] = cmp.mapping({
+            i = function(fallback)
+              if cmp.visible() and cmp.get_active_entry() then
+                cmp.confirm({ select = true })
+              else
+                fallback()
+              end
+            end,
+            s = cmp.mapping.confirm({ select = true }),
+            c = cmp.mapping.confirm({ select = false }),
+          }),
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
@@ -57,7 +67,7 @@ return {
         }),
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
-          { name = "luasnip" },
+          { name = "luasnip", dup = 1 },
         }, {
           { name = "buffer" },
           { name = "path" },
@@ -68,6 +78,27 @@ return {
             maxwidth = 50,
             ellipsis_char = "...",
           }),
+        },
+        matching = {
+          disallow_fuzzy_matching = false,
+          disallow_fullprefix_matching = false,
+          disallow_partial_fuzzy_matching = false,
+          disallow_partial_matching = false,
+          disallow_prefix_unmatching = false,
+        },
+        sorting = {
+          priority_weight = 2,
+          comparators = {
+            cmp.config.compare.offset,
+            cmp.config.compare.exact,
+            cmp.config.compare.score,
+            cmp.config.compare.recently_used,
+            cmp.config.compare.locality,
+            cmp.config.compare.kind,
+            cmp.config.compare.sort_text,
+            cmp.config.compare.length,
+            cmp.config.compare.order,
+          },
         },
       })
 

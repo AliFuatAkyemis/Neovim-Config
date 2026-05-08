@@ -15,11 +15,12 @@ return {
                                 auto_install = false,
                                 highlight = {
                                         enable = true,
-                                        disable = { "markdown", "markdown_inline" },
+                                        disable = { "markdown", "markdown_inline", "html" },
                                         additional_vim_regex_highlighting = false,
                                 },
                                 indent = {
-                                        enable = true
+                                        enable = true,
+                                        disable = { "html", "javascript", "typescript", "tsx" }
                                 },
                         })
                 end

@@ -22,6 +22,8 @@ return {
                 "bash-language-server",
                 "dockerfile-language-server",
                 "yaml-language-server",
+                "prettier",
+                "stylua",
             },
         },
     },
@@ -36,19 +38,53 @@ return {
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
             local servers = {
-                "lua_ls", "marksman", "pyright", "vtsls", "html", "cssls", 
-                "jsonls", "eslint", "tailwindcss", "clangd", "gopls", 
-                "rust_analyzer", "bashls", "dockerls", "yamlls"
+                lua_ls = {},
+                marksman = {},
+                pyright = {},
+                vtsls = {
+                    settings = {
+                        javascript = {
+                            suggest = {
+                                autoImports = true,
+                            },
+                        },
+                        typescript = {
+                            suggest = {
+                                autoImports = true,
+                            },
+                        },
+                    },
+                },
+                html = {
+                    filetypes = { "html", "javascriptreact", "typescriptreact" },
+                },
+                cssls = {},
+                jsonls = {},
+                eslint = {},
+                tailwindcss = {},
+                clangd = {},
+                gopls = {},
+                rust_analyzer = {},
+                bashls = {},
+                dockerls = {},
+                yamlls = {},
             }
 
             mlsp.setup({
-                ensure_installed = servers,
+                ensure_installed = vim.tbl_keys(servers),
             })
 
-            -- Setup servers using the new Neovim 0.10+ API
-            for _, server in ipairs(servers) do
-                vim.lsp.config(server, { capabilities = capabilities })
-                vim.lsp.enable(server)
+            for server, config in pairs(servers) do
+                local server_config = vim.tbl_deep_extend("force", {
+                    capabilities = capabilities,
+                }, config)
+
+                if vim.lsp.config then
+                    vim.lsp.config[server] = server_config
+                    vim.lsp.enable(server)
+                else
+                    require("lspconfig")[server].setup(server_config)
+                end
             end
 
             -- jdtls is handled separately by nvim-jdtls
