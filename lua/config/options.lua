@@ -60,7 +60,7 @@ vim.api.nvim_create_autocmd("FileType", {
     local parser = parsers[vim.bo.filetype]
     if parser then
       -- = operatörü seçili satırları bu komuta pipe eder
-      vim.opt_local.equalprg = "prettier --parser " .. parser
+      vim.opt_local.equalprg = "prettier --parser " .. parser .. " --tab-width 4"
     end
   end,
 })
