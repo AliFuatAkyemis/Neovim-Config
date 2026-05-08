@@ -10,6 +10,18 @@ return {
                 "java-test",
                 "marksman",
                 "pyright",
+                "vtsls",
+                "html-lsp",
+                "css-lsp",
+                "json-lsp",
+                "eslint-lsp",
+                "tailwindcss-language-server",
+                "clangd",
+                "gopls",
+                "rust-analyzer",
+                "bash-language-server",
+                "dockerfile-language-server",
+                "yaml-language-server",
             },
         },
     },
@@ -23,18 +35,21 @@ return {
             local mlsp = require("mason-lspconfig")
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+            local servers = {
+                "lua_ls", "marksman", "pyright", "vtsls", "html", "cssls", 
+                "jsonls", "eslint", "tailwindcss", "clangd", "gopls", 
+                "rust_analyzer", "bashls", "dockerls", "yamlls"
+            }
+
             mlsp.setup({
-                ensure_installed = { "lua_ls", "marksman", "pyright" },
+                ensure_installed = servers,
             })
 
-            -- Setup servers
-            vim.lsp.config("lua_ls", { capabilities = capabilities })
-            vim.lsp.config("marksman", { capabilities = capabilities })
-            vim.lsp.config("pyright", { capabilities = capabilities })
-
-            vim.lsp.enable("lua_ls")
-            vim.lsp.enable("marksman")
-            vim.lsp.enable("pyright")
+            -- Setup servers using the new Neovim 0.10+ API
+            for _, server in ipairs(servers) do
+                vim.lsp.config(server, { capabilities = capabilities })
+                vim.lsp.enable(server)
+            end
 
             -- jdtls is handled separately by nvim-jdtls
 
