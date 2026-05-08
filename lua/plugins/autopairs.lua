@@ -14,41 +14,46 @@ return {
         },
       })
 
-      -- Düzeltme: <tag>|</tag> → Enter →
-      --   <tag>
-      --     |        (cursor + shiftwidth)
-      --   </tag>
+      -- Düzeltme: <tag>|</tag> veya <>|</> → Enter →
+      --   <tag>          veya   <>
+      --     |                     |     (cursor + shiftwidth)
+      --   </tag>                </>
       vim.keymap.set("i", "<CR>", function()
-        local line = vim.api.nvim_get_current_line()
-        local col  = vim.api.nvim_win_get_cursor(0)[2]
+        local line   = vim.api.nvim_get_current_line()
+        local col    = vim.api.nvim_win_get_cursor(0)[2]
         local before = line:sub(1, col)
         local after  = line:sub(col + 1)
 
-        if before:match(">$") and after:match("^</[%w%-%.:]+>") then
+        -- Normal tag: <tag>|</tag>
+        -- Fragment:   <>|</>
+        local is_tag_pair = before:match(">$") and (
+          after:match("^</[%w%-%.:]+>") or after:match("^</>")
+        )
+
+        if is_tag_pair then
           local row    = vim.api.nvim_win_get_cursor(0)[1] - 1  -- 0-indexed
           local indent = line:match("^(%s*)") or ""
-          local sw     = vim.fn.shiftwidth()
-          local pad    = string.rep(" ", sw)
+          local pad    = string.rep(" ", vim.fn.shiftwidth())
 
           local middle_line  = indent .. pad
           local closing_line = indent .. after
 
-          -- Cursor'dan satır sonuna kadar sil, yerine iki yeni satır ekle
-          vim.api.nvim_buf_set_text(0, row, col, row, #line, {
-            "",
-            middle_line,
-            closing_line,
-          })
+          -- expr map içinde buffer değiştirilemez (E565), sonraki tick'e ertele
+          vim.schedule(function()
+            vim.api.nvim_buf_set_text(0, row, col, row, #line, {
+              "",
+              middle_line,
+              closing_line,
+            })
+            vim.api.nvim_win_set_cursor(0, { row + 2, #middle_line })
+          end)
 
-          -- Cursor'u orta satırın sonuna taşı (insert modunda kalır)
-          vim.api.nvim_win_set_cursor(0, { row + 2, #middle_line })
-          return
+          return ""  -- expr mode: hiçbir tuş ekleme, schedule halledecek
         end
 
-        -- Diğer durumlarda normal autopairs CR
-        local keys = vim.api.nvim_replace_termcodes(npairs.autopairs_cr(), true, true, true)
-        vim.api.nvim_feedkeys(keys, "n", false)
-      end, { noremap = true })
+        -- Diğer durumlarda normal autopairs CR (expr string olarak döndür)
+        return npairs.autopairs_cr()
+      end, { noremap = true, expr = true })
 
       local cmp_autopairs = require('nvim-autopairs.completion.cmp')
       local cmp = require('cmp')
