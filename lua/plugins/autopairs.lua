@@ -8,13 +8,14 @@ return {
 
       npairs.setup({
         check_ts = true,
+        map_cr = false,  -- bizim <CR> mapping'imiz halleder, çakışma olmasın
         ts_config = {
           lua = { "string" },
           javascript = { "template_string" },
         },
       })
 
-      -- Düzeltme: <tag>|</tag> veya <>|</> → Enter →
+      -- <tag>|</tag> veya <>|</> → Enter →
       --   <tag>          veya   <>
       --     |                     |     (cursor + shiftwidth)
       --   </tag>                </>
@@ -24,8 +25,7 @@ return {
         local before = line:sub(1, col)
         local after  = line:sub(col + 1)
 
-        -- Normal tag: <tag>|</tag>
-        -- Fragment:   <>|</>
+        -- Normal tag: <tag>|</tag>  veya  Fragment: <>|</>
         local is_tag_pair = before:match(">$") and (
           after:match("^</[%w%-%.:]+>") or after:match("^</>")
         )
@@ -38,7 +38,7 @@ return {
           local middle_line  = indent .. pad
           local closing_line = indent .. after
 
-          -- expr map içinde buffer değiştirilemez (E565), sonraki tick'e ertele
+          -- expr map'te buffer değiştirilemez (E565), sonraki tick'e ertele
           vim.schedule(function()
             vim.api.nvim_buf_set_text(0, row, col, row, #line, {
               "",
@@ -48,11 +48,11 @@ return {
             vim.api.nvim_win_set_cursor(0, { row + 2, #middle_line })
           end)
 
-          return ""  -- expr mode: hiçbir tuş ekleme, schedule halledecek
+          return ""  -- buffer zaten schedule ile halledilecek
         end
 
-        -- Diğer durumlarda normal autopairs CR (expr string olarak döndür)
-        return npairs.autopairs_cr()
+        -- Diğer durumlarda sade Enter (map_cr=false olduğundan autopairs çakışmaz)
+        return "\r"
       end, { noremap = true, expr = true })
 
       local cmp_autopairs = require('nvim-autopairs.completion.cmp')
