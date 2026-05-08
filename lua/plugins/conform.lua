@@ -29,5 +29,13 @@ return {
       timeout_ms = 500,
       lsp_fallback = true,
     },
+    formatters = {
+      prettier = {
+        prepend_args = { "--tab-width", "4" },
+      },
+      stylua = {
+        prepend_args = { "--indent-width", "4", "--indent-type", "Spaces" },
+      },
+    },
   },
 }
