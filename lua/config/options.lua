@@ -36,3 +36,31 @@ end
 
 -- LSP Progress Visibility
 vim.g.lsp_progress_show = false
+
+-- Indentation fix for HTML/JSX/TSX
+-- Treesitter indent is disabled for these filetypes, so we clear indentexpr
+-- to prevent Vim's built-in (broken) HTML indenter from running.
+-- equalprg routes the = operator through Prettier, so gg=G / == / visual =
+-- all produce the same result as <leader>f.
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "html", "javascript", "typescript", "javascriptreact", "typescriptreact" },
+  callback = function()
+    vim.opt_local.indentexpr = ""
+    vim.opt_local.autoindent = true
+    vim.opt_local.smartindent = false
+
+    -- Map filetype -> prettier parser
+    local parsers = {
+      javascript      = "babel",
+      javascriptreact = "babel",
+      typescript      = "typescript",
+      typescriptreact = "babel-ts",
+      html            = "html",
+    }
+    local parser = parsers[vim.bo.filetype]
+    if parser then
+      -- = operatörü seçili satırları bu komuta pipe eder
+      vim.opt_local.equalprg = "prettier --parser " .. parser
+    end
+  end,
+})
