@@ -37,17 +37,24 @@ end
 -- LSP Progress Visibility
 vim.g.lsp_progress_show = false
 
--- Indentation fix for HTML/JSX/TSX
--- Treesitter indent is disabled for these filetypes, so we clear indentexpr
--- to prevent Vim's built-in (broken) HTML indenter from running.
+-- Indentation for HTML/JSX/TSX
+-- Treesitter indent is disabled for these filetypes.
+-- Custom indentexpr (VSCode onEnterRules mantığı) Enter/o/O'da doğru indent sağlar.
 -- equalprg routes the = operator through Prettier, so gg=G / == / visual =
 -- all produce the same result as <leader>f.
+do
+  local indent_mod = require("config.indent")
+  _G.WebIndent = indent_mod.get_indent  -- indentexpr string referansı için global olmalı
+end
+
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "html", "javascript", "typescript", "javascriptreact", "typescriptreact" },
   callback = function()
-    vim.opt_local.indentexpr = ""
-    vim.opt_local.autoindent = true
+    vim.opt_local.indentexpr  = "v:lua.WebIndent()"
+    vim.opt_local.autoindent  = true
     vim.opt_local.smartindent = false
+    -- Re-indent tetikleyen karakterler: }, ), ], kapanış tag için >
+    vim.opt_local.indentkeys  = "0{,0},0(,0),0[,0],0<,0>,:,!^F,o,O,e"
 
     -- Map filetype -> prettier parser
     local parsers = {
