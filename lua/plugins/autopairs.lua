@@ -30,12 +30,24 @@ return {
           after:match("^</[%w%-%.:]+>") or after:match("^</>")
         )
 
-        if is_tag_pair then
+        -- Bracket pairs: (|)  {|}  [|]
+        local bracket_close = nil
+        if not is_tag_pair then
+          local open_close = { ["("] = ")", ["{"] = "}", ["["] = "]" }
+          local last_open  = before:sub(-1)
+          local first_close = after:sub(1, 1)
+          if open_close[last_open] and open_close[last_open] == first_close then
+            bracket_close = first_close
+          end
+        end
+
+        if is_tag_pair or bracket_close then
           local row    = vim.api.nvim_win_get_cursor(0)[1] - 1  -- 0-indexed
           local indent = line:match("^(%s*)") or ""
           local pad    = string.rep(" ", vim.fn.shiftwidth())
 
           local middle_line  = indent .. pad
+          -- tag için after'ın tamamı kapanış satırı; bracket için sadece after
           local closing_line = indent .. after
 
           -- expr map'te buffer değiştirilemez (E565), sonraki tick'e ertele
