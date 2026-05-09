@@ -38,6 +38,10 @@ vim.keymap.set('c', '<C-H>', '<C-W>', { noremap = true, silent = true })
 vim.keymap.set('i', '<C-BS>', '<C-W>', { noremap = true, silent = true })
 vim.keymap.set('c', '<C-BS>', '<C-W>', { noremap = true, silent = true })
 
+-- Fix Ctrl+Delete to delete next word
+vim.keymap.set('i', '<C-Del>', '<C-o>dw', { noremap = true, silent = true })
+vim.keymap.set('c', '<C-Del>', '<C-Right><C-W>', { noremap = true, silent = true })
+
 -- Neovide Fullscreen toggle
 if vim.g.neovide then
     vim.keymap.set('n', '<F11>', function()
