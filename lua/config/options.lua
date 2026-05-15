@@ -32,7 +32,22 @@ vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 -- GUI Visuals
 if vim.g.neovide or vim.g.nvui or vim.fn.has("gui_running") == 1 then
     vim.opt.guifont = "JetBrainsMono Nerd Font:h12"
+    vim.g.neovide_remember_window_size = false
+    vim.o.columns = 120
+    vim.o.lines = 35
 end
+
+vim.api.nvim_create_autocmd("UIEnter", {
+    once = true,
+    callback = function()
+        if vim.g.neovide then
+            vim.schedule(function()
+                vim.o.columns = 120
+                vim.o.lines = 35
+            end)
+        end
+    end,
+})
 
 -- LSP Progress Visibility
 vim.g.lsp_progress_show = false
