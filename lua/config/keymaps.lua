@@ -42,9 +42,13 @@ vim.keymap.set('c', '<C-BS>', '<C-W>', { noremap = true, silent = true })
 vim.keymap.set('i', '<C-Del>', '<C-o>dw', { noremap = true, silent = true })
 vim.keymap.set('c', '<C-Del>', '<C-Right><C-W>', { noremap = true, silent = true })
 
--- Neovide Fullscreen toggle
+-- Neovide specific keymaps
 if vim.g.neovide then
     vim.keymap.set('n', '<F11>', function()
         vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen
     end, { desc = "Toggle Fullscreen" })
+
+    vim.keymap.set({'n', 'v', 'i'}, '<C-S-n>', function()
+        vim.fn.jobstart({"alacritty", "--working-directory", vim.fn.getcwd()}, { detach = true })
+    end, { desc = "Open Alacritty in current directory" })
 end
