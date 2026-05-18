@@ -13,13 +13,28 @@ return {
                 -----@type neotree.Config?
                 opts = {
                         filesystem = {
+                                use_libuv_file_watcher = true,
                                 filtered_items = {
                                         visible = true,
                                         hide_gitignored = false,
                                         hide_hidden = false,
                                 },
                         },
-                }
+                },
+                config = function(_, opts)
+                        require("neo-tree").setup(opts)
+                        vim.api.nvim_create_autocmd({ "BufWritePost", "BufDelete", "QuitPre", "WinClosed" }, {
+                                callback = function()
+                                        vim.schedule(function()
+                                                pcall(function()
+                                                        local utils = require("neo-tree.utils")
+                                                        local manager = require("neo-tree.sources.manager")
+                                                        manager.opened_buffers_changed("filesystem", { opened_buffers = utils.get_opened_buffers() })
+                                                end)
+                                        end)
+                                end,
+                        })
+                end,
         },
 	{
 		"nvim-tree/nvim-web-devicons",
