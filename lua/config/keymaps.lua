@@ -51,4 +51,15 @@ if vim.g.neovide then
     vim.keymap.set({'n', 'v', 'i'}, '<C-S-n>', function()
         vim.fn.jobstart({"alacritty", "--working-directory", vim.fn.getcwd()}, { detach = true })
     end, { desc = "Open Alacritty in current directory" })
+
+    -- Terminal benzeri Copy/Paste kısayolları
+    vim.keymap.set('n', '<C-S-v>', '"+P', { desc = "Paste from clipboard" })
+    vim.keymap.set('v', '<C-S-v>', '"+P', { desc = "Paste from clipboard" })
+    vim.keymap.set('c', '<C-S-v>', '<C-R>+', { desc = "Paste from clipboard" })
+    vim.keymap.set('i', '<C-S-v>', '<C-R><C-O>+', { desc = "Paste from clipboard" })
+    
+    vim.keymap.set('i', '<C-v>', '<C-R><C-O>+', { desc = "Paste from clipboard" })
+    vim.keymap.set('c', '<C-v>', '<C-R>+', { desc = "Paste from clipboard" })
+
+    vim.keymap.set('v', '<C-S-c>', '"+y', { desc = "Copy to clipboard" })
 end
