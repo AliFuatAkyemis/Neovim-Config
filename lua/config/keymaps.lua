@@ -12,7 +12,9 @@ vim.keymap.set('n', '<C-k>', vim.diagnostic.open_float, { desc = "Open floating 
 
 -- General
 vim.keymap.set('n', '<leader>w', ":w<CR>", { desc = "Save file" })
-vim.keymap.set('i', 'jk', "<ESC>", { desc = "Escape to Normal mode" })
+-- jk -> ESC mapping kaldırıldı: insert modunda "j" yazarken timeoutlen
+-- kadar gecikmeye (Neovim jk sequence bekler) neden oluyordu.
+-- ESC veya <C-[> kullanın.
 
 -- Buffers
 vim.keymap.set('n', 'L', ":bnext<CR>", { desc = "Next buffer" })
