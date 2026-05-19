@@ -80,9 +80,9 @@ vim.api.nvim_create_autocmd("FileType", {
       html            = "html",
     }
     local parser = parsers[vim.bo.filetype]
-    if parser then
-      -- = operatörü seçili satırları bu komuta pipe eder
-      vim.opt_local.equalprg = "prettier --parser " .. parser .. " --tab-width 4"
-    end
+    -- We removed equalprg assignment because prettier outputs errors directly to the buffer 
+    -- if there is a syntax error (like unclosed bracket). 
+    -- conform.nvim already handles formatting safely.
+    -- vim.opt_local.equalprg = "prettier --parser " .. parser .. " --tab-width 4"
   end,
 })

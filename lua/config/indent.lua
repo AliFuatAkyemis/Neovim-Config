@@ -10,6 +10,26 @@ local M = {}
 -- current     : hesaplanan yeni satıra uygulanan Lua pattern (eşleşmeli)
 -- action      : "indent" | "outdent" | "none"
 local rules = {
+  -- ── Boş Bloklar → none ───────────────────────────────────────────────────
+  -- Eğer önceki satır açılışla bitiyor ve mevcut satır kapanışla başlıyorsa,
+  -- aynı hizada kalmalıdır (outdent uygulanmaz).
+  {
+    before     = ">%s*$",
+    before_not = { "/>%s*$", "</[%w%-%.:]+>%s*$" },
+    current    = "^%s*</",
+    action     = "none",
+  },
+  { before = "{%s*$",  current = "^%s*}",  action = "none" },
+  { before = "%(%-*$", current = "^%s*%)", action = "none" },
+  { before = "%[%s*$", current = "^%s*%]", action = "none" },
+
+  -- ── Kapanış → outdent ────────────────────────────────────────────────────
+  -- Mevcut satır kapanış ile başlıyorsa bir seviye geri al (outdent)
+  { current = "^%s*</", action = "outdent" },
+  { current = "^%s*}",  action = "outdent" },
+  { current = "^%s*%)", action = "outdent" },
+  { current = "^%s*%]", action = "outdent" },
+
   -- ── Açılış → indent ──────────────────────────────────────────────────────
   -- Önceki satır açık tag ile bitiyorsa: <head>, <div class="x">
   -- Hariç: /> (self-closing)  ve  </tag> (closing tag)
@@ -24,16 +44,6 @@ local rules = {
   { before = "%(%-*$", action = "indent" },
   -- Önceki satır [ ile bitiyorsa
   { before = "%[%s*$", action = "indent" },
-
-  -- ── Kapanış → outdent ────────────────────────────────────────────────────
-  -- Mevcut satır </tag> veya </> ile başlıyorsa
-  { current = "^%s*</", action = "outdent" },
-  -- Mevcut satır } ile başlıyorsa
-  { current = "^%s*}",  action = "outdent" },
-  -- Mevcut satır ) ile başlıyorsa
-  { current = "^%s*%)", action = "outdent" },
-  -- Mevcut satır ] ile başlıyorsa
-  { current = "^%s*%]", action = "outdent" },
 }
 
 function M.get_indent()
