@@ -38,14 +38,30 @@ end
 vim.api.nvim_create_autocmd("UIEnter", {
     once = true,
     callback = function()
-        if vim.g.neovide then
-            -- vim.schedule, Neovide UI kanalı hazır olmadan önce tetiklenebiliyor.
-            -- defer_fn ile 100ms gecikme, UI'ın tam bağlanmasını garantiler.
-            vim.defer_fn(function()
-                vim.o.columns = 120
-                vim.o.lines = 35
-            end, 200)
+        if not vim.g.neovide then return end
+
+        local timer = nil
+        local group = vim.api.nvim_create_augroup("NeovideInitSize", { clear = true })
+
+        local function set_size()
+            if timer then vim.fn.timer_stop(timer) end
+            pcall(vim.api.nvim_del_augroup_by_id, group)
+            vim.o.columns = 120
+            vim.o.lines = 35
         end
+
+        -- Neovide açılışta birden fazla VimResized gönderir ve bizim
+        -- ayarımızı ezer. Son resize'dan 200ms sonra boyutu uyguluyoruz (debounce).
+        vim.api.nvim_create_autocmd("VimResized", {
+            group = group,
+            callback = function()
+                if timer then vim.fn.timer_stop(timer) end
+                timer = vim.fn.timer_start(200, function() set_size() end)
+            end,
+        })
+
+        -- VimResized hiç gelmezse 1 saniye sonra yine de uygula
+        timer = vim.fn.timer_start(1000, function() set_size() end)
     end,
 })
 
