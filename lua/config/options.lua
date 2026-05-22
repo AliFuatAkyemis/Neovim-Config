@@ -32,38 +32,7 @@ vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 -- GUI Visuals
 if vim.g.neovide or vim.g.nvui or vim.fn.has("gui_running") == 1 then
     vim.opt.guifont = "JetBrainsMono Nerd Font:h12"
-    vim.g.neovide_remember_window_size = false
 end
-
-vim.api.nvim_create_autocmd("UIEnter", {
-    once = true,
-    callback = function()
-        if not vim.g.neovide then return end
-
-        local timer = nil
-        local group = vim.api.nvim_create_augroup("NeovideInitSize", { clear = true })
-
-        local function set_size()
-            if timer then vim.fn.timer_stop(timer) end
-            pcall(vim.api.nvim_del_augroup_by_id, group)
-            vim.o.columns = 120
-            vim.o.lines = 35
-        end
-
-        -- Neovide açılışta birden fazla VimResized gönderir ve bizim
-        -- ayarımızı ezer. Son resize'dan 200ms sonra boyutu uyguluyoruz (debounce).
-        vim.api.nvim_create_autocmd("VimResized", {
-            group = group,
-            callback = function()
-                if timer then vim.fn.timer_stop(timer) end
-                timer = vim.fn.timer_start(200, function() set_size() end)
-            end,
-        })
-
-        -- VimResized hiç gelmezse 1 saniye sonra yine de uygula
-        timer = vim.fn.timer_start(1000, function() set_size() end)
-    end,
-})
 
 -- LSP Progress Visibility
 vim.g.lsp_progress_show = false
