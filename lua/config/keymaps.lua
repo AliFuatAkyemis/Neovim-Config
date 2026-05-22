@@ -12,6 +12,15 @@ vim.keymap.set('n', '<C-k>', vim.diagnostic.open_float, { desc = "Open floating 
 
 -- General
 vim.keymap.set('n', '<leader>w', ":w<CR>", { desc = "Save file" })
+
+-- Sistem Clipboard
+-- y/p  → yalnızca Neovim'in iç register'ı (sistem clipboard'una dokunmaz)
+-- "+y  → sistem clipboard'una kopyala (normal: mevcut satır, visual: seçili alan)
+-- "+p  → sistem clipboard'undan yapıştır
+vim.keymap.set('n', '<leader>y', '"+yy', { desc = "Sistem clipboard'una satırı kopyala" })
+vim.keymap.set('v', '<leader>y', '"+y',  { desc = "Sistem clipboard'una seçimi kopyala" })
+vim.keymap.set('n', '<leader>p', '"+p',  { desc = "Sistem clipboard'undan yapıştır (sonra)" })
+vim.keymap.set('n', '<leader>P', '"+P',  { desc = "Sistem clipboard'undan yapıştır (önce)" })
 -- jk -> ESC mapping kaldırıldı: insert modunda "j" yazarken timeoutlen
 -- kadar gecikmeye (Neovim jk sequence bekler) neden oluyordu.
 -- ESC veya <C-[> kullanın.
@@ -53,15 +62,12 @@ if vim.g.neovide then
     vim.keymap.set({'n', 'v', 'i'}, '<C-S-n>', function()
         vim.fn.jobstart({"alacritty", "--working-directory", vim.fn.getcwd()}, { detach = true })
     end, { desc = "Open Alacritty in current directory" })
-
-    -- Terminal benzeri Copy/Paste kısayolları
-    vim.keymap.set('n', '<C-S-v>', '"+P', { desc = "Paste from clipboard" })
-    vim.keymap.set('v', '<C-S-v>', '"+P', { desc = "Paste from clipboard" })
-    vim.keymap.set('c', '<C-S-v>', '<C-R>+', { desc = "Paste from clipboard" })
-    vim.keymap.set('i', '<C-S-v>', '<C-R><C-O>+', { desc = "Paste from clipboard" })
-    
-    vim.keymap.set('i', '<C-v>', '<C-R><C-O>+', { desc = "Paste from clipboard" })
-    vim.keymap.set('c', '<C-v>', '<C-R>+', { desc = "Paste from clipboard" })
-
-    vim.keymap.set('v', '<C-S-c>', '"+y', { desc = "Copy to clipboard" })
 end
+
+-- Terminal benzeri Copy/Paste kısayolları
+-- Alacritty 0.13+ Kitty Keyboard Protocol sayesinde terminal Neovim'de de çalışır.
+vim.keymap.set('n', '<C-S-v>', '"+P',        { desc = "Paste from clipboard" })
+vim.keymap.set('v', '<C-S-v>', '"+P',        { desc = "Paste from clipboard" })
+vim.keymap.set('c', '<C-S-v>', '<C-R>+',     { desc = "Paste from clipboard" })
+vim.keymap.set('i', '<C-S-v>', '<C-R><C-O>+',{ desc = "Paste from clipboard" })
+vim.keymap.set('v', '<C-S-c>', '"+y',        { desc = "Copy to clipboard" })
