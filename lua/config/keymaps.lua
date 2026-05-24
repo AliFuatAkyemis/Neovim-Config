@@ -26,8 +26,15 @@ vim.keymap.set('n', '<leader>P', '"+P',  { desc = "Sistem clipboard'undan yapı�
 -- ESC veya <C-[> kullanın.
 
 -- Buffers
-vim.keymap.set('n', 'L', ":bnext<CR>", { desc = "Next buffer" })
-vim.keymap.set('n', 'H', ":bprevious<CR>", { desc = "Previous buffer" })
+-- Neo-tree penceresindeyken L/H tuşları sidebar'ı bozmasın diye filetype kontrolü yapılıyor
+local function buf_nav(cmd)
+  return function()
+    if vim.bo.filetype == "neo-tree" then return end
+    vim.cmd(cmd)
+  end
+end
+vim.keymap.set('n', 'L', buf_nav("bnext"),     { desc = "Next buffer" })
+vim.keymap.set('n', 'H', buf_nav("bprevious"), { desc = "Previous buffer" })
 vim.keymap.set('n', '<leader>x', ":bd<CR>", { desc = "Close buffer" })
 vim.keymap.set('n', '<leader>bp', ":BufferLineTogglePin<CR>", { desc = "Toggle pin buffer" })
 
