@@ -25,3 +25,6 @@ __pycache__/
 
 # Node/NPM (if any tools are local)
 node_modules/
+
+# Lazy.nvim lock file (paketler her zaman son versiyona güncelleniyor)
+lazy-lock.json
