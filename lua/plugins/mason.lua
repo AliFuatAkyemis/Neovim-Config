@@ -70,9 +70,77 @@ return {
                     end
                     return filetype
                 end,
+                settings = {
+                    css = {
+                        lint = {
+                            validProperties = {},
+                        },
+                    },
+                },
             })
 
+            local function get_angular_core_version(root_dir)
+                local package_json = vim.fs.joinpath(root_dir, "package.json")
+                if not vim.uv.fs_stat(package_json) then
+                    return ""
+                end
+                local f = io.open(package_json, "r")
+                if not f then
+                    return ""
+                end
+                local content = f:read("*a")
+                f:close()
+                local ok, json = pcall(vim.json.decode, content)
+                if not ok or not json then
+                    return ""
+                end
+                local version = (json.dependencies or {})["@angular/core"]
+                    or (json.devDependencies or {})["@angular/core"]
+                    or ""
+                return version:match("%d+%.%d+%.%d+") or ""
+            end
+
             vim.lsp.config("angularls", {
+                cmd = function(dispatchers, config)
+                    local root_dir = (config and config.root_dir) or vim.fn.getcwd()
+                    local node_paths = {}
+
+                    -- Project node_modules
+                    local project_node = vim.fs.joinpath(root_dir, "node_modules")
+                    if vim.uv.fs_stat(project_node) then
+                        table.insert(node_paths, project_node)
+                    end
+
+                    -- Mason fallback node_modules
+                    local mason_node = mason_path .. "/packages/angular-language-server/node_modules"
+                    if vim.uv.fs_stat(mason_node) then
+                        table.insert(node_paths, mason_node)
+                    end
+
+                    local ts_probe = table.concat(node_paths, ",")
+                    local ng_probe_paths = {}
+                    for _, p in ipairs(node_paths) do
+                        local ng_path = vim.fs.joinpath(p, "@angular/language-server/node_modules")
+                        if vim.uv.fs_stat(ng_path) then
+                            table.insert(ng_probe_paths, ng_path)
+                        else
+                            table.insert(ng_probe_paths, p)
+                        end
+                    end
+                    local ng_probe = table.concat(ng_probe_paths, ",")
+
+                    local cmd = {
+                        ng_cmd,
+                        "--stdio",
+                        "--tsProbeLocations",
+                        ts_probe,
+                        "--ngProbeLocations",
+                        ng_probe,
+                        "--angularCoreVersion",
+                        get_angular_core_version(root_dir),
+                    }
+                    return vim.lsp.rpc.start(cmd, dispatchers)
+                end,
                 filetypes    = { "typescript", "html", "typescriptreact", "typescript.tsx", "htmlangular" },
                 root_markers = { "angular.json", "project.json" },
             })

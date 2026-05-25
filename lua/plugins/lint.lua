@@ -7,7 +7,6 @@ return {
 
       lint.linters_by_ft = {
         html = { "htmlhint" },
-        htmlangular = { "htmlhint" },
       }
 
       -- Create autocommand to run linter

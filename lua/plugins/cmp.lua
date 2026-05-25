@@ -18,8 +18,10 @@ return {
       local luasnip = require("luasnip")
       local lspkind = require("lspkind")
 
-      require("luasnip.loaders.from_vscode").lazy_load()
       luasnip.filetype_extend("htmlangular", { "html" })
+      require("luasnip.loaders.from_vscode").lazy_load()
+      -- Force load lazy-loaded snippets for the current buffer
+      require("luasnip.loaders").load_lazy_loaded(vim.api.nvim_get_current_buf())
 
       cmp.setup({
         snippet = {
