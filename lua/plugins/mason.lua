@@ -25,6 +25,7 @@ return {
                 "prettier",
                 "stylua",
                 "angular-language-server",
+                "htmlhint",
             },
         },
         config = function(_, opts)
