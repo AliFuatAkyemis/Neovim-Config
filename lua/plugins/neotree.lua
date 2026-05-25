@@ -15,9 +15,10 @@ return {
                         filesystem = {
                                 use_libuv_file_watcher = true,
                                 filtered_items = {
-                                        visible = true,
-                                        hide_gitignored = false,
-                                        hide_hidden = false,
+                                        visible = false,
+                                        hide_gitignored = true,
+                                        hide_hidden = true,
+                                        hide_dotfiles = true,
                                 },
                         },
                 },

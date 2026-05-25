@@ -73,3 +73,13 @@ vim.api.nvim_create_autocmd("FileType", {
     -- vim.opt_local.equalprg = "prettier --parser " .. parser .. " --tab-width 4"
   end,
 })
+
+-- Disable comment continuation on enter for CSS/SCSS/LESS files
+-- to prevent the universal selector (*) from triggering auto-comment prefixing.
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "css", "scss", "less" },
+  callback = function()
+    vim.opt_local.formatoptions:remove({ "r", "o" })
+  end,
+})
+
