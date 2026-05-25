@@ -3,7 +3,7 @@ return {
         "williamboman/mason.nvim",
         cmd = "Mason",
         opts = {
-            ensure_installed = { 
+            ensure_installed = {
                 "lua_ls",
                 "jdtls",
                 "java-debug-adapter",
@@ -24,12 +24,13 @@ return {
                 "yaml-language-server",
                 "prettier",
                 "stylua",
+                "angular-language-server",
             },
         },
     },
     {
         "neovim/nvim-lspconfig",
-        dependencies = { 
+        dependencies = {
             "williamboman/mason-lspconfig.nvim",
             "hrsh7th/cmp-nvim-lsp",
         },
@@ -68,6 +69,7 @@ return {
                 bashls = {},
                 dockerls = {},
                 yamlls = {},
+                angularls = {},
             }
 
             mlsp.setup({
@@ -90,7 +92,7 @@ return {
             -- jdtls is handled separately by nvim-jdtls
 
             -- Keybinds
-            vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
+            vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
         end,
     },
 }
