@@ -41,6 +41,14 @@ local function is_not_void_element(prev_lnum)
   return true
 end
 
+-- Satırda kapatılmamış bir HTML/JSX etiketi (<div veya <li gibi) olup olmadığını denetler.
+-- Karşılaştırma operatörleri (x < y) ile çakışmaması için önünde alfanumerik karakter olmamalıdır.
+local function is_unclosed_tag(prev_lnum)
+  local line = vim.fn.getline(prev_lnum)
+  -- Satırın başından başlayan etiketler (örn: <li ) veya kelime karakteri olmayan bir karakterden sonra gelenler (örn: = <div )
+  return line:match("^%s*<[%a_][%w%-%.:]*[^>]*$") ~= nil or line:match("[^%w_]<[%a_][%w%-%.:]*[^>]*$") ~= nil
+end
+
 -- Kural tablosu — ilk eşleşen kural kazanır
 -- before      : önceki satıra uygulanan Lua pattern (eşleşmeli)
 -- before_not  : önceki satıra uygulanan Lua pattern (eşleşmemeli)
@@ -68,6 +76,9 @@ local rules = {
   { current = "^%s*}",  action = "outdent" },
   { current = "^%s*%)", action = "outdent" },
   { current = "^%s*%]", action = "outdent" },
+  { current = "^%s*/>", action = "outdent" },
+  { current = "^%s*>",  action = "outdent" },
+  { current = "^%s*['\"]%s*$", action = "outdent" },
 
   -- ── Açılış → indent ──────────────────────────────────────────────────────
   -- Önceki satır açık tag ile bitiyorsa: <head>, <div class="x">
@@ -76,6 +87,16 @@ local rules = {
     before     = ">%s*$",
     before_not = { "/>%s*$", "</[%w%-%.:]+>%s*$" },
     cond       = is_not_void_element,
+    action     = "indent",
+  },
+  -- Önceki satırda kapatılmamış etiket açılışı varsa (örn: <li, <div class="x")
+  {
+    cond       = is_unclosed_tag,
+    action     = "indent",
+  },
+  -- Önceki satır tırnakla açılan bir değer ataması ise (örn: style=", class=")
+  {
+    before     = "=%s*['\"]%s*$",
     action     = "indent",
   },
   -- Önceki satır { ile bitiyorsa
