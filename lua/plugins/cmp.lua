@@ -19,6 +19,7 @@ return {
       local lspkind = require("lspkind")
 
       require("luasnip.loaders.from_vscode").lazy_load()
+      luasnip.filetype_extend("htmlangular", { "html" })
 
       cmp.setup({
         snippet = {

@@ -59,7 +59,7 @@ local rules = {
     action     = "none",
   },
   { before = "{%s*$",  current = "^%s*}",  action = "none" },
-  { before = "%(%-*$", current = "^%s*%)", action = "none" },
+  { before = "%(%s*$", current = "^%s*%)", action = "none" },
   { before = "%[%s*$", current = "^%s*%]", action = "none" },
 
   -- ── Kapanış → outdent ────────────────────────────────────────────────────
@@ -81,7 +81,7 @@ local rules = {
   -- Önceki satır { ile bitiyorsa
   { before = "{%s*$",  action = "indent" },
   -- Önceki satır ( ile bitiyorsa
-  { before = "%(%-*$", action = "indent" },
+  { before = "%(%s*$", action = "indent" },
   -- Önceki satır [ ile bitiyorsa
   { before = "%[%s*$", action = "indent" },
 }

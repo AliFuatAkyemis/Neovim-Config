@@ -1,10 +1,10 @@
 return {
     {
         "williamboman/mason.nvim",
-        cmd = "Mason",
+        event = "VeryLazy",
         opts = {
             ensure_installed = {
-                "lua_ls",
+                "lua-language-server",
                 "jdtls",
                 "java-debug-adapter",
                 "java-test",
@@ -27,6 +27,16 @@ return {
                 "angular-language-server",
             },
         },
+        config = function(_, opts)
+            require("mason").setup(opts)
+            local mr = require("mason-registry")
+            for _, name in ipairs(opts.ensure_installed or {}) do
+                local ok, p = pcall(mr.get_package, name)
+                if ok and not p:is_installed() then
+                    p:install()
+                end
+            end
+        end,
     },
     {
         "neovim/nvim-lspconfig",
@@ -52,7 +62,13 @@ return {
             })
 
             vim.lsp.config("html", {
-                filetypes = { "html", "javascriptreact", "typescriptreact" },
+                filetypes = { "html", "htmlangular", "javascriptreact", "typescriptreact" },
+                get_language_id = function(bufnr, filetype)
+                    if filetype == "htmlangular" then
+                        return "html"
+                    end
+                    return filetype
+                end,
             })
 
             vim.lsp.config("angularls", {

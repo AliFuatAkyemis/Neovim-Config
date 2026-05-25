@@ -9,13 +9,14 @@ return {
                                 ensure_installed = { 
                                         "c", "lua", "vim", "vimdoc", "query", "python",
                                         "javascript", "typescript", "tsx", "html", "css", 
-                                        "json", "yaml", "bash", "dockerfile", "go", "rust", "cpp"
+                                        "json", "yaml", "bash", "dockerfile", "go", "rust", "cpp",
+                                        "markdown", "markdown_inline"
                                 },
                                 sync_install = false,
                                 auto_install = false,
                                 highlight = {
                                         enable = true,
-                                        disable = { "markdown", "markdown_inline", "html" },
+                                        disable = {},
                                         additional_vim_regex_highlighting = false,
                                 },
                                 indent = {
@@ -23,6 +24,7 @@ return {
                                         disable = { "html", "javascript", "typescript", "tsx" }
                                 },
                         })
+                        vim.treesitter.language.register("html", "htmlangular")
                 end
         }
 }

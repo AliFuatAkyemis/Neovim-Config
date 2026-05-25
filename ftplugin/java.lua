@@ -19,6 +19,9 @@ local config_path = jdtls_path .. "/config_linux"
 -- Find Lombok
 local lombok_jar = vim.fn.getcwd() .. "/lib/lombok.jar"
 if vim.fn.filereadable(lombok_jar) == 0 then
+	lombok_jar = vim.fn.stdpath("config") .. "/lib/lombok.jar"
+end
+if vim.fn.filereadable(lombok_jar) == 0 then
 	lombok_jar = jdtls_path .. "/lombok.jar"
 end
 
@@ -78,9 +81,7 @@ local config = {
 		}
 	},
 	init_options = {
-		bundles = {
-			vim.fn.glob(mason_path .. "/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar", 1),
-		},
+		bundles = vim.fn.glob(mason_path .. "/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar", true, true),
 		extendedClientCapabilities = {
 			classFileContentsSupport = true,
 			generateToStringPromptSupport = true,
@@ -93,8 +94,8 @@ local config = {
 }
 
 -- Add test bundles
-local test_bundles = vim.split(vim.fn.glob(mason_path .. "/java-test/extension/server/*.jar", 1), "\n")
-if test_bundles[1] ~= "" then
+local test_bundles = vim.fn.glob(mason_path .. "/java-test/extension/server/*.jar", true, true)
+if #test_bundles > 0 then
 	vim.list_extend(config.init_options.bundles, test_bundles)
 end
 

@@ -50,13 +50,13 @@ do
 end
 
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "html", "javascript", "typescript", "javascriptreact", "typescriptreact" },
+  pattern = { "html", "htmlangular", "javascript", "typescript", "javascriptreact", "typescriptreact" },
   callback = function()
     vim.opt_local.indentexpr  = "v:lua.WebIndent()"
     vim.opt_local.autoindent  = true
     vim.opt_local.smartindent = false
-    -- Re-indent tetikleyen karakterler: }, ), ], kapanış tag için >
-    vim.opt_local.indentkeys  = "0{,0},0(,0),0[,0],0<,0>,:,!^F,o,O,e"
+    -- Re-indent tetikleyen karakterler: }, ), ], kapanış tag için >, else, catch
+    vim.opt_local.indentkeys  = "0{,0},0(,0),0[,0],0<,0>,:,!^F,o,O,0=else,0=catch"
 
     -- Map filetype -> prettier parser
     local parsers = {

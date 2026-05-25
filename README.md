@@ -14,7 +14,7 @@ A modular, high-performance, and aesthetically pleasing Neovim configuration tai
   - **Lualine** for a clean status line.
   - **Neo-tree** for file navigation.
   - **Telescope** for fuzzy finding.
-- **Robust Indentation**: Fixed 8-space indentation as preferred for maximum readability in large projects.
+- **Robust Indentation**: Fixed 4-space indentation as preferred for maximum readability in large projects.
 
 ---
 
@@ -79,7 +79,7 @@ A modular, high-performance, and aesthetically pleasing Neovim configuration tai
 ## 🎨 Aesthetics
 
 This configuration uses **Catppuccin Mocha** by default with customized cursor lines and list characters for a premium feel. 
-Indentation is strictly set to **8 spaces**.
+Indentation is strictly set to **4 spaces**.
 
 ---
 *Maintained with ❤️ by Ali Fuat.*
