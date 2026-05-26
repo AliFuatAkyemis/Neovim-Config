@@ -10,7 +10,7 @@ return {
                                         "c", "lua", "vim", "vimdoc", "query", "python",
                                         "javascript", "typescript", "tsx", "html", "css", 
                                         "json", "yaml", "bash", "dockerfile", "go", "rust", "cpp",
-                                        "markdown", "markdown_inline"
+                                        "markdown", "markdown_inline", "angular"
                                 },
                                 sync_install = false,
                                 auto_install = false,
