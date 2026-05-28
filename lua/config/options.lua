@@ -83,3 +83,27 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- Detect htmlangular filetype for Angular projects (excluding index.html)
+vim.filetype.add({
+  pattern = {
+    [".*%.html$"] = function(path, bufnr)
+      -- Exclude index.html
+      if path:match("index%.html$") then
+        return "html"
+      end
+
+      -- Check if we are in an Angular project by searching upward for angular.json or project.json
+      local dir = vim.fs.dirname(path)
+      if dir and dir ~= "" then
+        local is_angular = #vim.fs.find({ "angular.json", "project.json" }, { path = dir, upward = true }) > 0
+        if is_angular then
+          return "htmlangular"
+        end
+      end
+
+      return "html"
+    end,
+  },
+})
+
+

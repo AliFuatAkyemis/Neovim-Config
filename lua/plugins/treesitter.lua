@@ -21,10 +21,10 @@ return {
                                 },
                                 indent = {
                                         enable = true,
-                                        disable = { "html", "javascript", "typescript", "tsx" }
+                                        disable = { "html", "htmlangular", "javascript", "typescript", "tsx" }
                                 },
                         })
-                        vim.treesitter.language.register("html", "htmlangular")
+                        vim.treesitter.language.register("angular", "htmlangular")
                 end
         }
 }
