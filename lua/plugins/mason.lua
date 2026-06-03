@@ -26,6 +26,8 @@ return {
                 "stylua",
                 "angular-language-server",
                 "htmlhint",
+                "kotlin-language-server",
+                "ktlint",
             },
         },
         config = function(_, opts)
@@ -59,6 +61,17 @@ return {
                 settings = {
                     javascript = { suggest = { autoImports = true } },
                     typescript = { suggest = { autoImports = true } },
+                },
+            })
+
+            vim.lsp.config("kotlin_language_server", {
+                cmd_env = {
+                    ANDROID_HOME = "/opt/android-sdk",
+                    JAVA_HOME = "/usr/lib/jvm/java-21-openjdk",
+                    GRADLE_OPTS = "-Dorg.gradle.configuration-cache=false",
+                },
+                init_options = {
+                    storagePath = vim.fn.stdpath("data") .. "/kotlin-language-server",
                 },
             })
 

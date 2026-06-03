@@ -12,7 +12,7 @@ return {
                                 "c", "lua", "vim", "vimdoc", "query", "python",
                                 "javascript", "typescript", "tsx", "html", "css",
                                 "json", "yaml", "bash", "dockerfile", "go", "rust", "cpp",
-                                "markdown", "markdown_inline", "angular"
+                                "markdown", "markdown_inline", "angular", "kotlin"
                         }
 
                         -- Install parsers asynchronously
@@ -30,7 +30,7 @@ return {
                                         pcall(vim.treesitter.start, ev.buf, ft)
 
                                         -- Enable Treesitter indentation (disable for web frontends as requested in original config)
-                                        local disable_indent = { "html", "htmlangular", "angular", "javascript", "typescript", "tsx" }
+                                        local disable_indent = { "html", "htmlangular", "angular", "javascript", "typescript", "tsx", "kotlin" }
                                         if not vim.list_contains(disable_indent, ft) then
                                                 vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
                                         end
