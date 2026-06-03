@@ -18,9 +18,7 @@ vim.opt.smartcase = true
 
 -- Behavior
 vim.opt.mouse = "a"
--- clipboard = "unnamedplus" kaldırıldı:
--- y/p yalnızca Neovim'in iç register'ını kullanır, sistem clipboard'una dokunmaz.
--- Sistem clipboard'una kopyalamak için: "+y  (bkz. keymaps.lua)
+vim.opt.clipboard = "unnamedplus"
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.undofile = true
