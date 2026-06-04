@@ -73,6 +73,46 @@ return {
                 init_options = {
                     storagePath = vim.fn.stdpath("data") .. "/kotlin-language-server",
                 },
+                -- Kotlin LSP hover/completion ayarları
+                settings = {
+                    kotlin = {
+                        completion = {
+                            snippets = { enabled = true },
+                        },
+                        compiler = {
+                            jvm = {
+                                -- Projedeki jvmToolchain(17) ile eşleşmeli
+                                target = "17",
+                            },
+                        },
+                        -- ÖNEMLİ: androidx/Compose gibi kaynak kodu olmayan
+                        -- kütüphaneler için KLS .class dosyalarını Kotlin'e
+                        -- decompile ederek hover dokümantasyonu üretir.
+                        -- Mavi sembollerin (setContent, Surface, MaterialTheme vb.)
+                        -- hover'ının null dönmesini bu ayar çözer.
+                        externalSources = {
+                            -- KLS kendi URI şemasını kullanarak decompile edilmiş
+                            -- kaynakları gösterir (kaynak JAR yoksa çalışır)
+                            useKlsScheme = true,
+                            -- .class → .kt dönüşümü: hover için Kotlin kodu gösterir
+                            autoConvertToKotlin = true,
+                        },
+                        -- Inlay hint'leri devre dışı bırak (performansı artırır, hover'ı hızlandırır)
+                        inlayHints = {
+                            typeHints = { enabled = false },
+                            parameterHints = { enabled = false },
+                            chainedHints = { enabled = false },
+                        },
+                    },
+                },
+                -- Gradle root dosyalarını tanı
+                root_markers = {
+                    "settings.gradle",
+                    "settings.gradle.kts",
+                    "build.gradle",
+                    "build.gradle.kts",
+                    "gradlew",
+                },
             })
 
             vim.lsp.config("html", {
@@ -193,13 +233,54 @@ return {
                 group = vim.api.nvim_create_augroup("UserLspConfig", {}),
                 callback = function(ev)
                     local opts = { buffer = ev.buf }
+                    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+
                     vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
                     vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
                     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
                     vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-                    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
                     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
                     vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
+
+                    -- Kotlin LSP için akıllı hover: indexing bitmeden null dönebilir,
+                    -- bu yüzden retry mekanizması ekliyoruz
+                    if client and client.name == "kotlin_language_server" then
+                        vim.keymap.set("n", "K", function()
+                            -- Önce normal hover'ı dene
+                            local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
+                            client:request("textDocument/hover", params, function(err, result)
+                                if err then
+                                    vim.notify("KLS hover hatası: " .. tostring(err.message), vim.log.levels.WARN)
+                                    return
+                                end
+                                if result and result.contents then
+                                    -- Sonuç var, normal göster
+                                    vim.lsp.buf.hover()
+                                else
+                                    -- KLS null döndü → indexing devam ediyor olabilir
+                                    vim.notify(
+                                        "⏳ KLS indeksleniyor, 1.5s içinde tekrar deneniyor...",
+                                        vim.log.levels.INFO
+                                    )
+                                    vim.defer_fn(function()
+                                        client:request("textDocument/hover", params, function(_, result2)
+                                            if result2 and result2.contents then
+                                                vim.lsp.buf.hover()
+                                            else
+                                                vim.notify(
+                                                    "ℹ️ Bu sembol için hover dokümantasyonu yok.\n"
+                                                    .. "KLS indeksleme sürüyorsa biraz bekleyin.",
+                                                    vim.log.levels.WARN
+                                                )
+                                            end
+                                        end, ev.buf)
+                                    end, 1500)
+                                end
+                            end, ev.buf)
+                        end, opts)
+                    else
+                        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+                    end
                 end,
             })
         end,

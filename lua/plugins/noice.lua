@@ -10,7 +10,9 @@ return {
         },
         hover = {
           enabled = true,
-          silent = true,
+          -- false: hover bo\u015f d\u00f6nerse "No information available" g\u00f6ster
+          -- (KLS bazen null d\u00f6ner, bu sayede debug edilebilir)
+          silent = false,
         },
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
         override = {
