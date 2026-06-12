@@ -220,6 +220,38 @@ return {
                 end,
             })
 
+            -- Pyright: .venv içindeki paketleri resolve et
+            vim.lsp.config("pyright", {
+                settings = {
+                    python = {
+                        analysis = {
+                            autoSearchPaths = true,
+                            useLibraryCodeForTypes = true,
+                            diagnosticMode = "openFilesOnly",
+                        },
+                    },
+                },
+                -- Proje kökündeki .venv'i otomatik bul
+                before_init = function(_, config)
+                    local venv_names = { ".venv", "venv", ".virtualenvs" }
+                    local root = config.root_dir or vim.fn.getcwd()
+                    for _, name in ipairs(venv_names) do
+                        local venv_path = root .. "/" .. name
+                        local stat = vim.uv.fs_stat(venv_path)
+                        if stat and stat.type == "directory" then
+                            local python_bin = venv_path .. "/bin/python"
+                            if vim.uv.fs_stat(python_bin) then
+                                config.settings.python = config.settings.python or {}
+                                config.settings.python.pythonPath = python_bin
+                                config.settings.python.venvPath = root
+                                config.settings.python.venv = name
+                                break
+                            end
+                        end
+                    end
+                end,
+            })
+
             -- Mason-lspconfig: kurulu serverları otomatik enable et
             -- jdtls hariç (jdtls = nvim-jdtls ile ayrıca yönetilir)
             require("mason-lspconfig").setup({
