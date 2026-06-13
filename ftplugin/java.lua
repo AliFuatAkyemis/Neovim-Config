@@ -89,6 +89,7 @@ local config = {
 			advancedOrganizeImportsSupport = true,
 			resolveAdditionalTextEditsSupport = true,
 			advancedGenerateAccessorsSupport = true,
+			overrideMethodsSupport = true,
 		},
 	}
 }
